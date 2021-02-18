@@ -1,2 +1,4 @@
 .idea
 tasks
+random.txt
+text_editor/__pycache__/**
