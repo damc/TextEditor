@@ -1,5 +1,5 @@
 from screenless import Application, Command
-from screenless import INPUT_BACKSPACE
+from screenless import INPUT_BACKSPACE, INPUT_EXIT
 from screenless import INPUT_DOWN, INPUT_LEFT, INPUT_RIGHT, INPUT_UP
 
 from .file_management import load, save
@@ -9,7 +9,7 @@ class TextEditor(Application):
     def __init__(self, file_path, cursor=None):
         super(TextEditor, self).__init__(
             [],
-            Command(self.write, exit_=self.write_exit)
+            Command(self.write)
         )
         self.file_path = file_path
         self.lines = [""]
@@ -20,10 +20,26 @@ class TextEditor(Application):
         super(TextEditor, self).run()
 
     def write(self):
-        self.input.on_input.add_listener('write', self._write_on_input)
+        input_ = self.input()
+        while input_ != INPUT_EXIT:
+            self.output(input_)
 
-    def write_exit(self):
-        self.input.on_input.remove_listener('write')
+            if input_ == INPUT_BACKSPACE:
+                self.backspace()
+            if input_ == INPUT_LEFT:
+                self.move_left()
+            if input_ == INPUT_RIGHT:
+                self.move_right()
+            if input_ == INPUT_DOWN:
+                self.move_down()
+            if input_ == INPUT_UP:
+                self.move_up()
+            if isinstance(input_, str):
+                self.insert(input_)
+
+            save(self.file_path, self.lines)
+
+            input_ = self.input()
 
     def backspace(self):
         if self.cursor.line == 0 and self.cursor.position == 0:
