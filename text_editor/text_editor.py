@@ -106,23 +106,6 @@ class TextEditor(Application):
         self.cursor.line += 1
         self.cursor.position = 0
 
-    def _write_on_input(self, input_):
-        self.output(input_)
-        if input_ == INPUT_BACKSPACE:
-            self.backspace()
-        if input_ == INPUT_LEFT:
-            self.move_left()
-        if input_ == INPUT_RIGHT:
-            self.move_right()
-        if input_ == INPUT_DOWN:
-            self.move_down()
-        if input_ == INPUT_UP:
-            self.move_up()
-        if isinstance(input_, str):
-            self.insert(input_)
-        print(self.lines)
-        save(self.file_path, self.lines)
-
     def _fix_cursor_position(self):
         self.cursor.line = max(0, self.cursor.line)
         self.cursor.line = min([self.cursor.line, len(self.lines) - 1])
